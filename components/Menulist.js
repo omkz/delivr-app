@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Children } from "react";
 import { Box, FlatList, Heading, HStack, VStack, Text, Spacer, Center, NativeBaseProvider, Image } from "native-base";
 
 
@@ -6,11 +6,14 @@ export default function Menulist() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+
   const fetchData = async () => {
-    const resp = await fetch("https://delivr-food.herokuapp.com/menus/lists");
-    const data = await resp.json();
-    setData(data);
-    setLoading(false);
+    fetch("https://delivr-food.herokuapp.com/menus/lists")
+      .then(resp => resp.json())
+      .then(children => {
+        setData(children.data);
+        setLoading(false);
+      })
   };
 
   const renderItem = ({ item }) => {
@@ -18,36 +21,37 @@ export default function Menulist() {
       <Box borderBottomWidth="1" _dark={{
         borderColor: "gray.600"
       }} borderColor="coolGray.200" pl="4" pr="5" py="2">
-          <HStack space={3} justifyContent="space-between">
-            <Image size="48px" source={{
-              uri: "https://wallpaperaccess.com/full/317501.jpg"}} alt="Alternate Text" />
-            <VStack>
-              <Text _dark={{
-                color: "warmGray.50"
-              }} color="coolGray.800" bold>
-                {item.name}
-              </Text>
-              <Text color="coolGray.600" _dark={{
-                color: "warmGray.200"
-              }}>
-                {item.price}
-              </Text>
-            </VStack>
-            <Spacer />
-            <Text fontSize="xs" _dark={{
+        <HStack space={3} justifyContent="space-between">
+          <Image size="48px" source={{
+            uri: "https://wallpaperaccess.com/full/317501.jpg"
+          }} alt="Alternate Text" />
+          <VStack>
+            <Text _dark={{
               color: "warmGray.50"
-            }} color="coolGray.800" alignSelf="flex-start">
-              {item.created_at}
+            }} color="coolGray.800" bold>
+              {item["attributes"]["name"]}
             </Text>
-          </HStack>
-        </Box>
+            <Text color="coolGray.600" _dark={{
+              color: "warmGray.200"
+            }}>
+              {item["attributes"]["price"]}
+            </Text>
+          </VStack>
+          <Spacer />
+          <Text fontSize="xs" _dark={{
+            color: "warmGray.50"
+          }} color="coolGray.800" alignSelf="flex-start">
+            {item["attributes"]["restaurant"]["name"]}
+          </Text>
+        </HStack>
+      </Box>
     );
   };
 
   useEffect(() => {
     fetchData();
   }, []);
-  
+
   return (
     <NativeBaseProvider>
       <Center flex={1} pt="10">
@@ -65,4 +69,4 @@ export default function Menulist() {
       </Center>
     </NativeBaseProvider>
   );
-  }
+}
