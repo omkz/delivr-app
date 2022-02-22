@@ -1,8 +1,8 @@
-import React, { useState, useEffect, Children } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, FlatList, Heading, HStack, VStack, Text, Spacer, Center, NativeBaseProvider, Image } from "native-base";
 
 
-export default function Menulist() {
+export default function MenuScreen() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -55,9 +55,6 @@ export default function Menulist() {
   return (
     <NativeBaseProvider>
       <Center flex={1} pt="10">
-        <Heading fontSize="xl" p="4" pb="3">
-          Menu
-        </Heading>
         {loading && <Box>Loading..</Box>}
         {data && (
           <FlatList
